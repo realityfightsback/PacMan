@@ -93,7 +93,31 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     x =  problem.getSuccessors(problem.getStartState())[0];
     
-    print x;
+    closed = {}
+    fringe = util.Stack()
+    fringe.push(problem.getStartState())
+    
+    while True:
+        if fringe.isEmpty():
+            return None
+        
+        nodeToExpand = fringe.pop()
+        
+        if(problem.isGoalState(nodeToExpand)):
+            return nodeToExpand
+        
+        if(nodeToExpand not in closed):
+            closed[nodeToExpand] = True
+            for successorState, direction, cost in problem.getSuccessors(nodeToExpand):
+                fringe.push(successorState)
+            
+       
+    print 'So what now'    
+        
+        
+    
+    
+    
     
     #util.raiseNotDefined()
 
