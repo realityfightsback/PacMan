@@ -93,15 +93,11 @@ def depthFirstSearch(problem):
 #     print "Start's successors:", problem.getSuccessors(problem.getStartState())
 #     x =  problem.getSuccessors(problem.getStartState())[0];
     
-    closed = {}
+#     closed = {}
     fringe = util.Stack()
     
     pathToNode = []
     fringe.push((pathToNode, problem.getStartState()))
-    
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
         
     while True:
         if fringe.isEmpty():
@@ -114,16 +110,14 @@ def depthFirstSearch(problem):
         if(problem.isGoalState(location)):
             return pathToNode 
 
-        if(location not in closed):
-            closed[location] = True
+        if(location not in problem._visited):
+#             closed[location] = True
             for successorState, direction, cost in problem.getSuccessors(location):
                 newPath = pathToNode[:]
                 newPath.append(direction)
                 fringe.push((newPath, successorState))
             
-       
-    print 'So what now'    
-        
+
         
     
     
@@ -134,8 +128,33 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
 
+    fringe = util.Queue()
+    
+    closed = set([])
+    
+    pathToNode = []
+    fringe.push((pathToNode, problem.getStartState()))
+    
+    while True:
+        if fringe.isEmpty():
+            return None
+        
+        nodeToExpand = fringe.pop()
+        
+        pathToNode, location = nodeToExpand
+        
+        if(problem.isGoalState(location)):
+            return pathToNode 
+
+        if(location not in closed):
+            closed.add(location)
+            for successorState, direction, cost in problem.getSuccessors(location):
+                newPath = pathToNode[:]
+                newPath.append(direction)
+                fringe.push((newPath, successorState))
+    
+    
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
