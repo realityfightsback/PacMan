@@ -88,28 +88,38 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
     
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    x =  problem.getSuccessors(problem.getStartState())[0];
+#     print "Start:", problem.getStartState()
+#     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+#     print "Start's successors:", problem.getSuccessors(problem.getStartState())
+#     x =  problem.getSuccessors(problem.getStartState())[0];
     
     closed = {}
     fringe = util.Stack()
-    fringe.push(problem.getStartState())
     
+    pathToNode = []
+    fringe.push((pathToNode, problem.getStartState()))
+    
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+        
     while True:
         if fringe.isEmpty():
             return None
         
         nodeToExpand = fringe.pop()
         
-        if(problem.isGoalState(nodeToExpand)):
-            return nodeToExpand
+        pathToNode, location = nodeToExpand
         
-        if(nodeToExpand not in closed):
-            closed[nodeToExpand] = True
-            for successorState, direction, cost in problem.getSuccessors(nodeToExpand):
-                fringe.push(successorState)
+        if(problem.isGoalState(location)):
+            return pathToNode 
+
+        if(location not in closed):
+            closed[location] = True
+            for successorState, direction, cost in problem.getSuccessors(location):
+                newPath = pathToNode[:]
+                newPath.append(direction)
+                fringe.push((newPath, successorState))
             
        
     print 'So what now'    
