@@ -273,6 +273,56 @@ class CornersProblem(search.SearchProblem):
     You must select a suitable state space and successor function
     """
 
+    def getClosestUnivisitedCorner(self, state, xy, touchedCorners):
+        distance = 99999999
+        cornerCoordinates = (-1, -1)
+        i = 1
+        for corner in self.corners:
+            if(state[i] == False):#ignore already visited corners
+                if(corner not in touchedCorners):
+                    cornerDistance = self.calcDistance(corner, xy)
+#                 ((corner[0] - state[0][0]) ** 2 + (corner[1] - state[0][1]) ** 2) ** 0.5
+                    if(cornerDistance >= .01 and distance >= cornerDistance):
+                    # Makes sure we don't reach a corner and then keep it as a goal forever
+                        distance = cornerDistance
+                        cornerCoordinates = corner
+
+#                     cornerCoordinates = corner
+                
+            i= i+1
+        touchedCorners.add(cornerCoordinates)
+        return (distance, cornerCoordinates)
+        
+    def calcDistance(self, cornerCoords, xy):
+        return ((cornerCoords[0] - xy[0]) ** 2 + (cornerCoords[1] - xy[1]) ** 2) ** 0.5
+     
+    def getRoundTripCost(self,state, problem):
+        tripCost = 0
+        
+        touchedCorners = self.createCornerSet(state)
+        
+        locationToInvestigate = state[0]
+        
+        while( len(touchedCorners) != 4):
+            distance, locationToInvestigate = self.getClosestUnivisitedCorner(state, locationToInvestigate, touchedCorners);
+            tripCost = tripCost + distance
+        return tripCost
+        
+    def createCornerSet(self, state):
+        i = 1
+        theSet = set([])
+        for corner in self.corners:
+            if(state[i]):
+                theSet.add(corner)
+        return theSet
+
+    def getNumOfVisitedCorners(self, state):
+        i = 0  
+        for x in state:
+            if(x == True):
+                i = i + 1
+        return i
+    
     def __init__(self, startingGameState):
         """
         Stores the walls, pacman's starting position and corners.
@@ -289,6 +339,7 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
 
+        self.type = 'Corners'
 #         self._visitedlist #use to check whether all corners
         
     def getStartState(self):
@@ -375,7 +426,17 @@ def cornersHeuristic(state, problem):
     walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0  # Default to trivial solution
+    # Thought process is favor solutions that move us closer to the nearest corner. 
+    # Once we have moved to the nearest corner, favor states that have that corner visit included
+    # Visits without corner visits are effectively multiplied
+    
+#     distance, coords = problem.getClosestUnivisitedCorner(state, state[0], set([]))
+
+#     cornerReachBonus = problem.getNumOfVisitedCorners(state) * 2
+#     if(cornerReachBonus > distance):
+#         return 0  
+    return  problem.getRoundTripCost(state, problem)
+#  - cornerReachBonus
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
