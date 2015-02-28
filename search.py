@@ -135,14 +135,16 @@ def breadthFirstSearch(problem):
         
         nodeToExpand = fringe.pop()
         
-        pathToNode, location = nodeToExpand
+        pathToNode, state = nodeToExpand
         
-        if(problem.isGoalState(location)):
+        print 'Assessing (%s)' % (state,)
+         
+        if(problem.isGoalState(state)):
             return pathToNode 
 
-        if(location not in closed):
-            closed.add(location)
-            for successorState, direction, cost in problem.getSuccessors(location):
+        if(state not in closed):
+            closed.add(state)
+            for successorState, direction, cost in problem.getSuccessors(state):
                 newPath = pathToNode[:]
                 newPath.append(direction)
                 fringe.push((newPath, successorState))
