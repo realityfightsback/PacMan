@@ -196,7 +196,7 @@ def nullHeuristic(state, problem=None):
     return 0
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
+    """Search the node that has the lowest combined stepCost and heuristic first."""
     "*** YOUR CODE HERE ***"
     #util.raiseNotDefined()
 
@@ -207,9 +207,10 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     closed = set([])
     
     pathToNode = []
-    pathCost = 0
-    
-    fringe.push((pathToNode, pathCost, problem.getStartState()), heuristic(problem.getStartState(),problem))
+    totalPathCost = 0
+    priorGoalCheckPassed = False
+        
+    fringe.push((pathToNode, totalPathCost, priorGoalCheckPassed, problem.getStartState()), heuristic(problem.getStartState(), problem))
     
     while True:
         if fringe.isEmpty():
@@ -217,17 +218,21 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         
         nodeToExpand = fringe.pop()
         
-        pathToNode, pathCost, location = nodeToExpand
+        pathToNode, totalPathCost, priorGoalCheckPassed, location = nodeToExpand
         
         if(problem.isGoalState(location)):
-            return pathToNode 
+            if(priorGoalCheckPassed):
+                return pathToNode
+            fringe.push( (pathToNode, totalPathCost, True, location), totalPathCost)
+            continue #don't expand goal states. Will be more expensive
+
 
         if(location not in closed):
             closed.add(location)
-            for successorState, direction, cost in problem.getSuccessors(location):
+            for successorState, direction, stepCost in problem.getSuccessors(location):
                 newPath = pathToNode[:]
                 newPath.append(direction)
-                fringe.push( (newPath, pathCost + cost, successorState), pathCost + heuristic(successorState, problem))
+                fringe.push( (newPath, totalPathCost + stepCost, False, successorState), totalPathCost + stepCost + heuristic(successorState, problem))
     
 
 
