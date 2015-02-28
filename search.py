@@ -137,7 +137,7 @@ def breadthFirstSearch(problem):
         
         pathToNode, state = nodeToExpand
         
-        print 'Assessing (%s)' % (state,)
+      #  print 'Assessing (%s)' % (state,)
          
         if(problem.isGoalState(state)):
             return pathToNode 

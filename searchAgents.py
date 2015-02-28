@@ -331,10 +331,10 @@ class CornersProblem(search.SearchProblem):
                 tempList = list(state)
                 tempList[0] = (nextx, nexty)
 
-                if((x, y) in self.corners):
+                if((nextx, nexty) in self.corners):
                     i = 1
                     for corner in self.corners:
-                        if(corner == (x, y)):  # Important to keep corners ordered (T, F, F, F) means top corner visited
+                        if(corner == (nextx, nexty)):  # Important to keep corners ordered (T, F, F, F) means top corner visited
                             tempList[i] = True 
                         i = i + 1
                         
