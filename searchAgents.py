@@ -278,32 +278,34 @@ class CornersProblem(search.SearchProblem):
         cornerCoordinates = (-1, -1)
         i = 1
         for corner in self.corners:
-            if(state[i] == False):#ignore already visited corners
+            if(state[i] == False):  # ignore already visited corners
                 if(corner not in touchedCorners):
                     cornerDistance = self.calcDistance(corner, xy)
 #                 ((corner[0] - state[0][0]) ** 2 + (corner[1] - state[0][1]) ** 2) ** 0.5
-                    if(cornerDistance >= .01 and distance >= cornerDistance):
+                    if(distance >= cornerDistance):
                     # Makes sure we don't reach a corner and then keep it as a goal forever
                         distance = cornerDistance
                         cornerCoordinates = corner
 
 #                     cornerCoordinates = corner
                 
-            i= i+1
+            i = i + 1
         touchedCorners.add(cornerCoordinates)
         return (distance, cornerCoordinates)
         
     def calcDistance(self, cornerCoords, xy):
-        return ((cornerCoords[0] - xy[0]) ** 2 + (cornerCoords[1] - xy[1]) ** 2) ** 0.5
+#         return ((cornerCoords[0] - xy[0]) ** 2 + (cornerCoords[1] - xy[1]) ** 2) ** 0.5
+        return abs(cornerCoords[0] - xy[0]) + abs(cornerCoords[1] - xy[1])
+
      
-    def getRoundTripCost(self,state, problem):
+    def getRoundTripCost(self, state, problem):
         tripCost = 0
         
         touchedCorners = self.createCornerSet(state)
         
         locationToInvestigate = state[0]
         
-        while( len(touchedCorners) != 4):
+        while(len(touchedCorners) != 4):
             distance, locationToInvestigate = self.getClosestUnivisitedCorner(state, locationToInvestigate, touchedCorners);
             tripCost = tripCost + distance
         return tripCost
@@ -314,6 +316,7 @@ class CornersProblem(search.SearchProblem):
         for corner in self.corners:
             if(state[i]):
                 theSet.add(corner)
+            i=i+1
         return theSet
 
     def getNumOfVisitedCorners(self, state):
@@ -339,6 +342,13 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
 
+        self.initialCornersHit = [False, False, False, False]
+
+        i = 0
+        for corner in self.corners:
+            if corner == self.startingPosition:
+                self.corners[i] = True
+                i = i + 1
         self.type = 'Corners'
 #         self._visitedlist #use to check whether all corners
         
@@ -348,7 +358,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return (self.startingPosition, False, False, False, False)
+        return (self.startingPosition, self.initialCornersHit[0], self.initialCornersHit[1], self.initialCornersHit[2], self.initialCornersHit[3])
 #         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -435,6 +445,7 @@ def cornersHeuristic(state, problem):
 #     cornerReachBonus = problem.getNumOfVisitedCorners(state) * 2
 #     if(cornerReachBonus > distance):
 #         return 0  
+
     return  problem.getRoundTripCost(state, problem)
 #  - cornerReachBonus
 
