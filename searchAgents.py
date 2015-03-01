@@ -10,6 +10,7 @@
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
+from search import SearchProblem
 
 
 """
@@ -570,9 +571,15 @@ class ClosestDotSearchAgent(SearchAgent):
         food = gameState.getFood()
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
-
+        
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        
+#         Radiate outward in cardinal directions
+# If the direction has a food pellet apply 
+
+        return search.uniformCostSearch(problem)
+        
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -608,7 +615,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x, y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return (x,y) in self.food.asList()
+        
 
 def mazeDistance(point1, point2, gameState):
     """
