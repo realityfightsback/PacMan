@@ -513,6 +513,32 @@ class AStarFoodSearchAgent(SearchAgent):
         self.searchType = FoodSearchProblem
 
 def foodHeuristic(state, problem):
+    def getRoundTripCost(position, foodSet, state):
+        tripCost = 0
+        pacManPosition = position
+        while len(foodSet) > 0:
+            
+            stepCost, pacManPosition = getClosestNodeAndDistance(pacManPosition, foodSet,state)
+            tripCost = tripCost + stepCost
+            foodSet.remove(pacManPosition)
+        return tripCost
+        
+        
+    def euclideDist(xy1, xy2):
+        return ((xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2) ** 0.5
+    
+    def getClosestNodeAndDistance(pacmanPosition, foodSet, state):
+        closestNode = None
+        closestDistance = 99999
+        for food in foodSet:
+#             tempDistance = euclideDist(pacmanPosition, food)
+            tempDistance = util.manhattanDistance(pacmanPosition, food)
+            if tempDistance <closestDistance:
+                closestDistance = tempDistance
+                closestNode = food
+        
+        return (closestDistance, closestNode)
+
     """
     Your heuristic for the FoodSearchProblem goes here.
 
@@ -542,7 +568,11 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
+    
+    
+#     return getRoundTripCost(position, foodGrid.asList(), state)
     return foodGrid.count()
+
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
